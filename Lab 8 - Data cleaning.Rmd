@@ -25,7 +25,17 @@ data_subset <- da04690.0001 %>%
 
 1. To get a feel for its structure, look at the class, dimensions, column names, structure, and basic summary statistics of your data.
 
+```{r}
+class(data_subset)
 
+dim(data_subset)
+
+names(data_subset)
+
+str(data_subset)
+
+summary(data_subset)
+```
 
 2. Preview the first and last 15 rows of your data. Is you dataset tidy? If not, what principles of tidy data does it seem to be violating?
 
