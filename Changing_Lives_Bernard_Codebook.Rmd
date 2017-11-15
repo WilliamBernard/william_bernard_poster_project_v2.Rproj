@@ -1,0 +1,444 @@
+---
+title: "Changing_Lives_Bernard_Codebook"
+author: "William Bernard"
+date: "November 14, 2017"
+output: pdf_document
+---
+
+# Study Design
+
+The purpose of this study is to investigate measures of happiness and analyze the impact of loss/hardship on life satisfaction of individuals. This invesigation will also look at those who have suffered loss/hardship and analyze if a predisposition towards successfully navigating hardship effects overall life satisfaction. 
+
+The sponsor of this study is the University of Washington 
+
+Orignally, The ACL was sponsoreed by the National Institute of Aging (NIA), and the National Insitutes of Health (NIH). some later activities were supporteed by a "Robert Wood Johnson Foundation Investigators in Health Policy Award to James S. House" (ACL). 
+
+The Data collection organization is named Americans' Changing Lives. 
+
+This data set is a nationally representative cross-section survey of U.S. population aged 25+
+
+This is a longitudinal study. Data was collected using a series of face-to-face or telephone interviews between 1986 - 2011. African Americans and people aged 60 + were over sampled at twice the rate of other groups. 
+
+# Sampling
+
+The population being sampled is the U.S. population aged 25 +.
+
+A multistage stratified area probability sample with oversampling of Blacks and those aged 60 and older was used. 
+
+# Variable Index
+
+```{r, echo = FALSE}
+library(dplyr)
+
+
+
+load("C:\\Users\\William Bernard\\Desktop\\americans's_changing_lives_data_set\\ICPSR_04690\\DS0001\\04690-0001-Data.rda")
+
+changing_lives_subset <- da04690.0001 %>% 
+  select(V103, V104, V301, V314, V316, V317, V322, V323, V324, V328, V329, V330, V331, V332, V401, V416, V419, V420, V425, V429, V440, V441, V445, V446, V534, V613, V701, V706, V709, V710, V711, V732, V735, V934,V1002, V1006, V1007, V1009, V1010, V1022, V1501, V1504, V1505, V1508, V1520, V1524, V1601, V1602, V1603, V1605, V1609, V1619, V2024, V2027, V2029, V2033, V2200, V2308, V2309, V2310)
+
+colnames(changing_lives_subset) <- c("sex_r", "age_r", "sat_life", "life_could_happier", "look_back_sat", "no_change_life", "sat_home", "sat_neighborhood", "safe_attack", "pos_self_att", "think_am_good", "feel_am_failure", "can_do_any", "pushed_around", "marital_stat", "one_mar_deal_death_spouse" ,"one_mar_deal_divorce", "times_widowed", "times_divorce", "two_plus_mar_deal_divorce", "child_die", "num_child_die", "child_death_unexp", "deal_child_death", "deal_death_parent", "deal_spouse_die", "ever_widowed", "death_unexp", "wid_sui_murd", "fatal_illness", "how_rec_death", "things_happen", "stronger_person", "see_psych", "felt_dep", "was_happy", "felt_lonely", "no_knows_well", "enjoyed_life", "event_cause_dep", "phys_attack", "deal_phys_attack", "life_threat_ill", "deal_ill", "lost_job_three_yr", "deal_job_loss", "accept_bad", "die_when_time", "part_god_plan", "bad_meant_be", "entitled_good_fut", "rew_afterlife", "widowed_y_n", "deal_death_sp_one_plus_mar", "ever_dev", "deal_dev", "life_sat_index", "child_die_three_yr", "assult_three_yr", "ill_threat_three_yr")
+
+library(memisc)
+
+changing_lives_subset_final <- as.data.set(changing_lives_subset)
+
+```
+
+
+
+```{r, echo = FALSE}
+
+changing_lives_subset_final
+
+changing_lives_subset_final <- within(changing_lives_subset_final, {
+  description(sex_r) <- "Sex of Respondant"
+  description(age_r) <- "Age of Respondant"
+  description(sat_life) <- "Respondant satisfaction with life"
+  description(life_could_happier) <- "Respondant thinks life could be happier"
+  description(look_back_sat) <- "Looking back respondant is satisfied"
+  description(no_change_life) <- "Respondant would not change their life"
+  description(sat_home) <- "Respondant is satisfied with their home"
+  description(sat_neighborhood) <- "Respondant is satisfied with their neighborhood"
+  description(safe_attack) <- "Respondant feels safe from personal attack"
+  description(pos_self_att) <-"Respondant has Positive self attitude "
+  description(think_am_good) <- "Respondant thinks 'I am no good'"
+  description(feel_am_failure) <- "Respondant feels 'I am a failure'"
+  description(can_do_any) <- "Respondant thinks 'I can do anything'"
+  description(pushed_around) <- "Respondant feels they are pushed around in life"
+  description(marital_stat) <- "Marital Status of respondant"
+  description(one_mar_deal_death_spouse) <- "One marriage, how did respondant deal with death of spouse"
+  description(one_mar_deal_divorce) <- "One marriage, how did respondant deal with divorce "
+  description(times_widowed) <- "Times respondant widowed" 
+  description(times_divorce) <- "Number of respondant divorces"
+  description(two_plus_mar_deal_divorce) <- "Two plus marriages, how did respondant deal with divorce"
+  description(child_die) <- "Respondant ever have children die"
+  description(num_child_die) <- "Number of respondant children died"
+  description(child_death_unexp) <- "respondant's Child's death unexpected"
+  description(deal_child_death) <- "How respondant dealt with child's death"
+  description(deal_death_parent) <- "How respondant dealt with death of parent"
+  description(deal_spouse_die) <- "Respondant deal well with death of spouse"
+  description(ever_widowed) <- "Respondant ever widowed"
+  description(death_unexp) <- "Was the death of the respondant's spouse unexpected?"
+  description(wid_sui_murd) <- "Was the cause of the respondant's spouse's death suicide or murder?"
+  description(fatal_illness) <- "how lond did respondant's spouse suffer from fatal illness?"
+  description(how_rec_death) <- "How has the respondant recovered after the death of the spouse?"
+  description(things_happen) <- "Respondant thinks things just happen"
+  description(stronger_person) <- "Is the respondant stronger person now"
+  description(see_psych) <- "Does the respondant see a psychiatrist"
+  description(felt_dep) <- "Respondant was depressed"
+  description(was_happy) <- "Respondant was happy"
+  description(felt_lonely) <- "Respondant felt lonely"
+  description(no_knows_well) <- "Respondant thinks 'no one knows me well'"
+  description(enjoyed_life) <- "Respondant enjoys life"
+  description(event_cause_dep) <- "An event caused respondants depression"
+  description(phys_attack) <- "Respondant ever been physically attacked?"
+  description(deal_phys_attack) <- "How did respondant deal with the phyisical attack"
+  description(life_threat_ill) <- "Respondant ever have a lifethreatening illness"
+  description(deal_ill) <- "How did the respondant deal with the lifethreatening illness"
+  description(lost_job_three_yr) <- "Has the respondant lost a job in the last 3 years"
+  description(deal_job_loss) <- "How did the responant react to losing the job in the last 3 years"
+  description(accept_bad) <- "Does the respondant accept bad things?"
+  description(die_when_time) <- "Does the respondant think you die when its time to die?"
+  description(part_god_plan) <- "Does the respondant think everything is part of god's plan?"
+  description(bad_meant_be) <- "Does the respondant think bad things are meant to be?"
+  description(entitled_good_fut) <- "Does the respondant think they are entitled to a good future?"
+  description(rew_afterlife) <- "Does the respondant think they will be rewarded in the afterlife?"
+  description(widowed_y_n) <- "Has the respondant ever been widowed yes or no"
+  description(deal_death_sp_one_plus_mar) <- "Respondants with one or more marriages, How did the respondant deal with the death of the spouse "
+  description(ever_dev) <- "Has the respondant ever been divorced?"
+  description(deal_dev) <- "Respondant divorced in last 3 years?"
+  description(life_sat_index) <- "Life satisfaction index"
+  description(child_die_three_yr) <- "Has the respondant had a child die in the last 3 years?"
+  description(assult_three_yr) <- "Has the respondant been assulted in the last 3 years?"
+  description(ill_threat_three_yr) <- "Has the respondant suffered from a life threatening illness in the last 3 years?"
+  
+})
+```
+
+
+```{r, echo = FALSE}
+changing_lives_subset_final <- within(changing_lives_subset_final, {
+measurement(sex_r) <- "nominal"
+measurement(age_r) <- "ratio"
+measurement(sat_life) <- "ordinal"
+measurement(life_could_happier) <- "ordinal"
+measurement(look_back_sat) <- "ordinal"
+measurement(no_change_life) <- "ordinal"
+measurement(sat_home) <- "ordinal"
+measurement(sat_neighborhood) <- "ordinal"
+measurement(safe_attack) <- "ordinal"
+measurement(pos_self_att) <- "ordinal"
+measurement(think_am_good) <- "ordinal"
+measurement(feel_am_failure) <- "ordinal"
+measurement(can_do_any) <- "ordinal"
+measurement(pushed_around) <- "ordinal"
+measurement(marital_stat) <- "ordinal"
+measurement(one_mar_deal_death_spouse) <- "ordinal"
+measurement(one_mar_deal_divorce) <- "ordinal"
+measurement(times_widowed) <- "interval"
+measurement(times_divorce) <- "interval"
+measurement(two_plus_mar_deal_divorce) <- "ordinal"
+measurement(child_die) <- "nominal"
+measurement(num_child_die) <- "interval"
+measurement(child_death_unexp) <- "nominal"
+measurement(deal_child_death) <- "ordinal"
+measurement(deal_death_parent) <- "ordinal"
+measurement(deal_spouse_die) <- "ordinal"
+measurement(ever_widowed) <- "nominal"
+measurement(death_unexp) <- "nominal"
+measurement(wid_sui_murd) <- "nominal"
+measurement(fatal_illness) <- "nominal"
+measurement(how_rec_death) <- "ordinal"
+measurement(things_happen) <- "ordinal"
+measurement(stronger_person) <- "ordinal"
+measurement(see_psych) <- "nominal"
+measurement(felt_dep) <- "ordinal"
+measurement(was_happy) <- "ordinal"
+measurement(felt_lonely) <- "ordinal"
+measurement(no_knows_well) <- "ordinal"
+measurement(enjoyed_life) <- "ordinal"
+measurement(event_cause_dep) <- "nominal"
+measurement(phys_attack) <- "nominal"
+measurement(deal_phys_attack) <- "ordinal"
+measurement(life_threat_ill) <- "nominal"
+measurement(deal_ill) <- "ordinal"
+measurement(lost_job_three_yr) <- "nominal"
+measurement(deal_job_loss) <- "ordinal"
+measurement(accept_bad) <- "ordinal"
+measurement(die_when_time) <- "ordinal"
+measurement(part_god_plan) <- "ordinal"
+measurement(bad_meant_be) <- "ordinal"
+measurement(entitled_good_fut) <- "ordinal"
+measurement(rew_afterlife) <- "ordinal"
+measurement(widowed_y_n) <- "nominal"
+measurement(deal_death_sp_one_plus_mar) <- "ordinal"
+measurement(ever_dev) <-"nominal"
+measurement(deal_dev) <- "ordinal"
+measurement(life_sat_index) <- "ratio"
+measurement(child_die_three_yr) <-"nominal"
+measurement(assult_three_yr) <- "nominal"
+measurement(ill_threat_three_yr) <-"nominal"
+})
+```
+
+```{r, echo = FALSE}
+changing_lives_subset_final <- within(changing_lives_subset_final, {
+labels(sex_r) <- c(
+  "MALE"               = 1,
+  "FEMALE"             = 2)
+labels(sat_life) <- c(
+  "COMPSAT"            = 1,
+  "VERYSAT"            = 2,
+  "SOMESAT"            = 3, 
+  "NVERYSAT"           = 4,
+  "NOTAASAT"           = 5)
+labels(life_could_happier) <- c(
+  "ST AGREE"           = 1,
+  "AG SOME"            = 2,
+  "DIS SOME"           = 3,
+  "STR DIS"            = 4)
+labels(look_back_sat) <- c(
+  "ST AGREE"           = 1,
+  "AG SOME"            = 2,
+  "DIS SOME"           = 3,
+  "STR DIS"            = 4)
+labels(no_change_life) <- c(
+  "ST AGREE"           = 1,
+  "AG SOME"            = 2,
+  "DIS SOME"           = 3,
+  "STR DIS"            = 4)
+labels(sat_home) <- c(
+  "COMPSAT"            = 1,
+  "VERYSAT"            = 2,
+  "SOMESAT"            = 3, 
+  "NVERYSAT"           = 4,
+  "NOTAASAT"           = 5)
+labels(sat_neighborhood) <- c(
+  "COMPSAT"            = 1,
+  "VERYSAT"            = 2,
+  "SOMESAT"            = 3, 
+  "NVERYSAT"           = 4,
+  "NOTAASAT"           = 5)
+labels(safe_attack) <- c(
+  "VERYTRUE"           = 1,
+  "MOSTTRUE"           = 2,
+  "SOMETRUE"           = 3,
+  "NOTTRUE"            = 4)
+labels(pos_self_att) <- c(
+  "ST AGREE"           = 1,
+  "AG SOME"            = 2,
+  "DIS SOME"           = 3,
+  "STR DIS"            = 4)
+labels(think_am_good) <- c(
+  "ST AGREE"           = 1,
+  "AG SOME"            = 2,
+  "DIS SOME"           = 3,
+  "STR DIS"            = 4)
+labels(feel_am_failure) <- c(
+  "ST AGREE"           = 1,
+  "AG SOME"            = 2,
+  "DIS SOME"           = 3,
+  "STR DIS"            = 4)
+labels(can_do_any) <- c(
+  "ST AGREE"           = 1,
+  "AG SOME"            = 2,
+  "DIS SOME"           = 3,
+  "STR DIS"            = 4)
+labels(pushed_around) <- c(
+  "ST AGREE"           = 1,
+  "AG SOME"            = 2,
+  "DIS SOME"           = 3,
+  "STR DIS"            = 4)
+labels(marital_stat) <- c(
+  "MARRIED"            = 1,
+  "SEPARATE"           = 2,
+  "DIVORCED"           = 3,
+  "WIDOWED"            = 4,
+  "NEVMARRY"           = 5)
+labels(one_mar_deal_death_spouse) <- c(
+  "VERYWELL"           = 1,
+  "QUITEWEL"           = 2,
+  "SOMEWELL"           = 3,
+  "NTTOWELL"           = 4)
+labels(one_mar_deal_divorce) <- c(
+  "VERYWELL"           = 1,
+  "QUITEWEL"           = 2,
+  "SOMEWELL"           = 3,
+  "NTTOWELL"           = 4)
+labels(two_plus_mar_deal_divorce) <- c(
+  "VERYWELL"           = 1,
+  "QUITEWEL"           = 2,
+  "SOMEWELL"           = 3,
+  "NTTOWELL"           = 4)
+labels(child_die) <- c(
+  "YES"                = 1,
+  "NO"                 = 5)
+labels(child_death_unexp) <- c(
+  "UNEXPECT"           = 1,
+  "EXPECTED"           = 2)
+labels(deal_child_death) <- c(
+  "VERYWELL"           = 1,
+  "QUITEWEL"           = 2,
+  "SOMEWELL"           = 3,
+  "NTTOWELL"           = 4)
+labels(deal_death_parent) <- c(
+  "VERYWELL"           = 1,
+  "QUITEWEL"           = 2,
+  "SOMEWELL"           = 3,
+  "NTTOWELL"           = 4)
+labels(deal_spouse_die) <- c(
+  "STRAGREE"           = 1,
+  "AGRSOME"            = 2,
+  "DAGRSOME"           = 3,
+  "ST DISAG"           = 4)
+labels(ever_widowed) <- c(
+  "EVRWIDOW"           = 1,
+  "ALLOTHER"           = 2)
+labels(death_unexp) <- c(
+  "UNEXPECT"           = 1,
+  "EXPECTED"           = 2,
+  "UNDOCUMENTED CODE"  = 7)
+labels(wid_sui_murd) <- c(
+  "SUI/MURD"           = 1,
+  "ALLOTHER"           = 2)
+labels(fatal_illness) <- c(
+  "AFEWDAYS"           = 1,
+  "WEEKS"              = 2,
+  "MONTHS"             = 3,
+  "YRORMORE"           = 4,
+  "UNDOCUMENTED CODE"  = 7)
+labels(how_rec_death) <- c(
+  "COMPLETE"           = 1,
+  "ALM COMP"           = 2,
+  "FAIR MCH"           = 3,
+  "SOMEWHAT"           = 4,
+  "NOTMUCH"            = 5)
+labels(things_happen) <- c(
+  "VERYTRUE"           = 1,
+  "MOSTTRUE"           = 2,
+  "SOMETRUE"           = 3,
+  "NOTTRUE"            = 4)
+labels(stronger_person) <- c(
+  "VERYTRUE"           = 1,
+  "MOSTTRUE"           = 2,
+  "SOMETRUE"           = 3,
+  "NOTTRUE"            = 4)
+labels(see_psych) <- c(
+  "YES"                = 1,
+  "NO"                 = 5)
+labels(felt_dep) <- c(
+  "HARDEVER"           = 1,
+  "SOMETIME"           = 2,
+  "MOSTTIME"           = 3)
+labels(was_happy) <- c(
+  "HARDEVER"           = 1,
+  "SOMETIME"           = 2,
+  "MOSTTIME"           = 3)
+labels(felt_lonely) <- c(
+  "HARDEVER"           = 1,
+  "SOMETIME"           = 2,
+  "MOSTTIME"           = 3)
+labels(no_knows_well) <- c(
+  "HARDEVER"           = 1,
+  "SOMETIME"           = 2,
+  "MOSTTIME"           = 3)
+labels(enjoyed_life) <- c(
+  "HARDEVER"           = 1,
+  "SOMETIME"           = 2,
+  "MOSTTIME"           = 3)
+labels(event_cause_dep) <- c(
+  "YES"                = 1,
+  "NO"                 = 5)
+labels(phys_attack) <- c(
+  "YES"                = 1,
+  "NO"                 = 5)
+labels(deal_phys_attack) <- c(
+  "VERYWELL"           = 1,
+  "QUITEWEL"           = 2,
+  "SOMEWELL"           = 3,
+  "NTTOWELL"           = 4)
+labels(life_threat_ill) <- c(
+  "YES"                = 1,
+  "NO"                 = 5)
+labels(deal_ill) <- c(
+  "VERYWELL"           = 1,
+  "QUITEWEL"           = 2,
+  "SOMEWELL"           = 3,
+  "NTTOWELL"           = 4)
+labels(lost_job_three_yr) <- c(
+  "YES"                = 1,
+  "NO"                 = 5)
+labels(deal_job_loss) <- c(
+  "VERYWELL"           = 1,
+  "QUITEWEL"           = 2,
+  "SOMEWELL"           = 3,
+  "NTTOWELL"           = 4)
+labels(accept_bad) <- c(
+  "STRAGREE"           = 1,
+  "AGRSOME"            = 2, 
+  "DAGRSOME"           = 3, 
+  "STRDAGR"            = 4)
+labels(die_when_time) <- c(
+  "STRAGREE"           = 1,
+  "AGRSOME"            = 2, 
+  "DAGRSOME"           = 3, 
+  "STRDAGR"            = 4)
+labels(part_god_plan) <- c(
+  "STRAGREE"           = 1,
+  "AGRSOME"            = 2, 
+  "DAGRSOME"           = 3, 
+  "STRDAGR"            = 4)
+labels(bad_meant_be) <- c(
+  "STRAGREE"           = 1,
+  "AGRSOME"            = 2, 
+  "DAGRSOME"           = 3, 
+  "STRDAGR"            = 4)
+labels(entitled_good_fut) <- c(
+  "STRAGREE"           = 1,
+  "AGRSOME"            = 2, 
+  "DAGRSOME"           = 3, 
+  "STRDAGR"            = 4)
+labels(rew_afterlife) <- c(
+  "STRAGREE"           = 1,
+  "AGRSOME"            = 2, 
+  "DAGRSOME"           = 3, 
+  "STRDAGR"            = 4)
+labels(widowed_y_n) <- c(
+  "YES"                = 1,
+  "NO"                 = 5)
+labels(deal_death_sp_one_plus_mar) <- c(
+  "VERYWELL"           = 1,
+  "QUITWELL"           = 2,
+  "SOMEWHWE"           = 3,
+  "NOT2WELL"           = 4)
+labels(ever_dev) <- c(
+  "YES"                = 1,
+  "NO"                 = 5)
+labels(deal_dev) <- c(
+  "YES"                = 1,
+  "NO"                 = 5)
+labels(child_die_three_yr) <- c(
+  "YES"                = 1,
+  "NO"                 = 5)
+labels(assult_three_yr) <- c(
+  "YES"                = 1,
+  "NO"                 = 5)
+labels(ill_threat_three_yr) <- c(
+  "YES"                = 1,
+  "NO"                 = 5)
+})
+```
+
+```{r, echo = FALSE}
+
+changing_lives_subset_final <- within(changing_lives_subset_final, {
+missing.values(death_unexp) <- c(7)
+missing.values(fatal_illness) <- c(7)
+})
+```
+
+```{r, echo = FALSE}
+
+codebook(changing_lives_subset_final)
+```
