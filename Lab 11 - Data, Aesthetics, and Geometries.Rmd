@@ -1,0 +1,91 @@
+---
+title: "Lab 11 - Data, Aesthetics, & Geometries"
+author: "Your Name Here"
+date: "November 9, 2017"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+Complete the following exercises below. Knit together the PDF document and commit both the Lab 11 RMD file and the PDF document to Git. Push the changes to GitHub so both documents are visible in your public GitHub repository. 
+
+1. Which variables in your dataset are you interested in visualizing? Describe the level of measurement of these variables and what type of geography you think is appropriate to represent these variables. Give your reasoning for choosing the `geom_()` you selected. 
+
+```{r, echo = FALSE}
+library(ggplot2)
+
+library(dplyr)
+
+load("C:\\Users\\William Bernard\\Desktop\\americans's_changing_lives_data_set\\ICPSR_04690\\DS0001\\04690-0001-Data.rda")
+
+changing_lives_subset <- da04690.0001 %>% 
+  select(V103, V104, V301, V314, V316, V317, V322, V323, V324, V328, V329, V330, V331, V332, V401, V416, V419, V420, V425, V429, V440, V441, V445, V446, V534, V613, V701, V706, V709, V710, V711, V732, V735, V934,V1002, V1006, V1007, V1009, V1010, V1022, V1501, V1504, V1505, V1508, V1520, V1524, V1601, V1602, V1603, V1605, V1609, V1619, V2024, V2027, V2029, V2033, V2200, V2308, V2309, V2310)
+
+colnames(changing_lives_subset) <- c("sex_r", "age_r", "sat_life", "life_could_happier", "look_back_sat", "no_change_life", "sat_home", "sat_neighborhood", "safe_attack", "pos_self_att", "think_am_good", "feel_am_failure", "can_do_any", "pushed_around", "marital_stat", "one_mar_deal_death_spouse" ,"one_mar_deal_divorce", "times_widowed", "times_divorce", "two_plus_mar_deal_divorce", "child_die", "num_child_die", "child_death_unexp", "deal_child_death", "deal_death_parent", "deal_spouse_die", "ever_widowed", "death_unexp", "wid_sui_murd", "fatal_illness", "how_rec_death", "things_happen", "stronger_person", "see_psych", "felt_dep", "was_happy", "felt_lonely", "no_knows_well", "enjoyed_life", "event_cause_dep", "phys_attack", "deal_phys_attack", "life_threat_ill", "deal_ill", "lost_job_three_yr", "deal_job_loss", "accept_bad", "die_when_time", "part_god_plan", "bad_meant_be", "entitled_good_fut", "rew_afterlife", "widowed_y_n", "deal_death_sp_one_plus_mar", "ever_dev", "deal_dev", "life_sat_index", "child_die_three_yr", "assult_three_yr", "ill_threat_three_yr")
+
+library(memisc)
+
+changing_lives_subset_final <- as.data.set(changing_lives_subset)
+
+```
+
+I want to look at the overall satisfaction with life data and a number of variables such as death of child, widow sataus or has been subject to physical attack. This would be a combination of both ordinal data and nominal data. Im thinking the best way to represend this data would be to graph the nominal variable on the x axis then make two discrete bar charts for each x variable for each of the ordinal satisfaction levels.  
+
+2. Is your data in the proper format to visualize the data in the way you want? Why or why not? *If you need/want to change the structure of your data, do it below.* 
+
+I think the data is in the proper format, the observations and varaibles are discrete in their measuremnts. 
+
+
+3. Create at least two different exploratory plots of the variables you chose using the skills we covered in class today. What types of mapping aesthetics did you choose and why? What do these plots tell you about your data?
+
+```{r}
+
+ggplot(data = changing_lives_subset,
+       aes(x = life_sat_index)) + 
+  geom_histogram()
+
+
+
+
+widow_subset <- subset(changing_lives_subset_final, widowed_y_n == "\"YES\"")
+
+#I am trying to subset my data based on a variable, I feel like this should work but its not showing any outputs Ill just look at other data for now, but this is something I want to return to. 
+
+ggplot(data = changing_lives_subset,
+       aes(x = times_widowed, y = sat_life)) + 
+         geom_point()
+```
+4. Create at least three variations of the plots you've already made by modifying some of the arguments we covered in class (i.e. `position`, `scale`, `size`, `linetype` etc.). Do any of these modifications help you understand your data better? Why or why not? Do any of them create a misleading interpretation of the relationships between your variables? If yes, how so?
+
+```{r}
+ggplot(data = changing_lives_subset,
+       aes(x = times_widowed, y = sat_life, col = "red",)) + 
+         geom_point()
+
+ggplot(data = changing_lives_subset,
+       aes(x = times_widowed, y = sat_life, col = "red", size = 2)) + 
+         geom_point()
+
+ggplot(data = changing_lives_subset,
+       aes(x = times_widowed, y = sat_life, col = "red")) + 
+         geom_point(position = "jitter")
+
+ggplot(data = changing_lives_subset,
+       aes(x = life_sat_index)) + 
+  geom_histogram(binwidth = .05)
+
+ggplot(data = changing_lives_subset,
+       aes(x = life_sat_index)) + 
+  geom_histogram(col = "red")
+
+ggplot(data = changing_lives_subset,
+       aes(x = life_sat_index,)) + 
+  geom_histogram(binwidth = .35, col = "red") +
+  labs(x = "Life Satisfaction Index")
+```
+
+chaning the bin size of the histrogram is useful to view the distribution (~normal). the jitter in the plot allows the audience to see the number of cases at each level. The jitter is absolutely crutial, considering all the points fall into one of 4 catagories. I do not think it is misleading considering the data wold be undecipherable without it. 
+
+5. From the plots you've created thus far, do any of them seem appropriate for a general audience? Why or why not? If so, what do you think you'd still need to do to make them more suitable as explanatory visualizations? 
+
+I think I need to do better to communicate what the audience is looking at. This can be accomplished through ascetic modifications and labeling (titles etc). Manipulating the data further to create something that is representative of the data but not manipulative towards the audience is also paramount. 
