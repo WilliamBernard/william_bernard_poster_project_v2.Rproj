@@ -1,0 +1,133 @@
+---
+title: "Lab 12 - Statistics, Coordinates, Facets, and Themes"
+author: "William Bernard"
+date: "November 14, 2017"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+Complete the following exercises below. Knit together the PDF document and commit both the Lab 12 RMDfile and the PDF document to Git. Push the changes to GitHub so both documents are visible in your public GitHub repository.
+
+```{r, echo = FALSE}
+setwd("C:/Users/William Bernard/Desktop/William Bernard Poster Project v.2/william_bernard_poster _project_v2")
+
+library(ggplot2)
+
+library(dplyr)
+
+load("C:\\Users\\William Bernard\\Desktop\\americans's_changing_lives_data_set\\ICPSR_04690\\DS0001\\04690-0001-Data.rda")
+
+changing_lives_subset <- da04690.0001 %>% 
+  select(V103, V104, V301, V314, V316, V317, V322, V323, V324, V328, V329, V330, V331, V332, V401, V416, V419, V420, V425, V429, V440, V441, V445, V446, V534, V613, V701, V706, V709, V710, V711, V732, V735, V934,V1002, V1006, V1007, V1009, V1010, V1022, V1501, V1504, V1505, V1508, V1520, V1524, V1601, V1602, V1603, V1605, V1609, V1619, V2024, V2027, V2029, V2033, V2200, V2308, V2309, V2310)
+
+colnames(changing_lives_subset) <- c("sex_r", "age_r", "sat_life", "life_could_happier", "look_back_sat", "no_change_life", "sat_home", "sat_neighborhood", "safe_attack", "pos_self_att", "think_am_good", "feel_am_failure", "can_do_any", "pushed_around", "marital_stat", "one_mar_deal_death_spouse" ,"one_mar_deal_divorce", "times_widowed", "times_divorce", "two_plus_mar_deal_divorce", "child_die", "num_child_die", "child_death_unexp", "deal_child_death", "deal_death_parent", "deal_spouse_die", "ever_widowed", "death_unexp", "wid_sui_murd", "fatal_illness", "how_rec_death", "things_happen", "stronger_person", "see_psych", "felt_dep", "was_happy", "felt_lonely", "no_knows_well", "enjoyed_life", "event_cause_dep", "phys_attack", "deal_phys_attack", "life_threat_ill", "deal_ill", "lost_job_three_yr", "deal_job_loss", "accept_bad", "die_when_time", "part_god_plan", "bad_meant_be", "entitled_good_fut", "rew_afterlife", "widowed_y_n", "deal_death_sp_one_plus_mar", "ever_dev", "deal_dev", "life_sat_index", "child_die_three_yr", "assult_three_yr", "ill_threat_three_yr")
+
+library(memisc)
+
+
+
+changing_lives_subset_final <- as.data.set(changing_lives_subset)
+
+```
+
+1. Choose one or more graphics you created for Lab 11 and either experiment with the underlying statistical layer if it already has one (i.e. if you made a histogram experiement with different bin widths) or add a separate statistical layer to your plot (i.e. a smooothing curve). Choose something you think will offer meaningful insight and describe why you made the choice you did. What additional information does this provide viewers of your graphic?
+
+```{r}
+
+ggplot(data = changing_lives_subset,
+       aes(x = times_widowed, y = sat_life, col = "red",)) + 
+         geom_point()
+
+ggplot(data = changing_lives_subset,
+       aes(x = times_widowed, y = sat_life, col = "red", size = 2)) + 
+         geom_point()
+
+ggplot(data = changing_lives_subset,
+       aes(x = times_widowed, y = sat_life, col = "red")) + 
+         geom_point(position = "jitter") +
+  geom_boxplot(colour = "black")
+```
+I thought adding a geom_boxplot would add to the visualization. it is able to show the distribution of the points as a whole more effectivly, this is espeically imprtant considering a jitter effect was used to make the plot viewable in the first place. 
+
+
+2. With the same or a different plot created in Lab 11, experiment with zooming in on specific areas of your graphic and changing the aspect ratio. Are their any benefits/drawbacks with either or both of these approaches for the visualizations you've created? What are they? 
+
+```{r}
+ggplot(data = changing_lives_subset,
+       aes(x = times_widowed, y = sat_life, col = "red")) + 
+         geom_point(position = "jitter") +
+  geom_boxplot(colour = "black") +
+  coord_cartesian(xlim = 1)
+
+
+```
+With this plot, I have zoomed into only the x = 1 variable. With this new plot we are only looking at the data points pertaining to individuals who have been widowed once. This allows us to more closely and accurately look at the data of a specific subset of the data. stretching the data would by changing the aspect ratio would not be helpful in this case because each x value is descrete. 
+
+3. Try facetting a plot you have made by another categorical variable in your data (this can even be as simple as Male/Female). What is the difference between `facet_wrap()` and `facet_grid()`? How might facetting be useful in data visualization?
+
+```{r}
+ggplot(data = changing_lives_subset,
+       aes(x = times_widowed, y = sat_life, col = "red")) + 
+         geom_point(position = "jitter") +
+  facet_grid(. ~sex_r)
+```
+
+This is super helpful for data visualization. It allows you to look at the data in the context of another variable and orginize it in a way that lets you easily compare the two. 
+
+
+4. Use the `theme()` layer to change the appearance of a plot of your choice including the
+  * plot, axes, and legend titles
+  * axes tick marks
+  * text size
+  * legend position
+  
+```{r}
+ggplot(data = changing_lives_subset,
+       aes(x = times_widowed, y = sat_life, col = "red")) + 
+         geom_point(position = "jitter") +
+  geom_boxplot(colour = "black") +
+  facet_grid(. ~sex_r) 
+
+  
+theme_bernard <- theme(
+  panel.background = element_blank(),
+  legend.background = element_blank(),
+  axis.title = element_text(colour = "red", size = 10),
+  axis.text = element_text(colour = "black", size = 5),
+  legend.position = "bottom"
+  
+  
+  
+)
+
+ggplot(data = changing_lives_subset,
+       aes(x = times_widowed, y = sat_life, col = "red")) + 
+         geom_point(position = "jitter") +
+  geom_boxplot(colour = "black") +
+  facet_grid(. ~sex_r) +
+  theme_bernard
+```
+  
+
+5. Create three versions of a graphic of your choice using different built-in themes or a theme created from `ggthemes`. Which ones do you think are best for presenting in an academic journal? A poster session? What are the qualities of the themes that you choice that you think make them more appropriate for presentation?
+
+```{r}
+library(ggthemes)
+
+plot_one <- ggplot(data = changing_lives_subset,
+       aes(x = times_widowed, y = sat_life, col = "red")) + 
+         geom_point(position = "jitter") +
+  geom_boxplot(colour = "black") +
+  facet_grid(. ~sex_r) 
+
+plot_one + theme_stata()
+
+plot_one + theme_solid()
+
+plot_one + theme_tufte()
+  
+  
+```
+
+Out of the three I personally enjoy theme_tufte the most. Primarily because it isnt oddly formatted because of the conversion(in the case of theme_stata), and because there are actual descriptors(unlike with theme_solid). The font is visually appealing and the theme itself is minimalist, it would most likely work well for the poster project. 
