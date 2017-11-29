@@ -1,0 +1,155 @@
+---
+title: "Lab 13 - Chi square, ANOVA, & correlation"
+author: "William Bernard"
+date: "November 28, 2017"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+Complete the following exercises below and include all code used to find the answers. Knit together the PDF document and commit both the Lab 13 RMD file and the PDF document to Git. Push the changes to GitHub so both documents are visible in your public GitHub repository.
+
+```{r, echo = FALSE}
+library(ggplot2)
+
+library(dplyr)
+
+load("C:\\Users\\William Bernard\\Desktop\\americans's_changing_lives_data_set\\ICPSR_04690\\DS0001\\04690-0001-Data.rda")
+
+changing_lives_subset <- da04690.0001 %>% 
+  select(V103, V104, V301, V314, V316, V317, V322, V323, V324, V328, V329, V330, V331, V332, V401, V416, V419, V420, V425, V429, V440, V441, V445, V446, V534, V613, V701, V706, V709, V710, V711, V732, V735, V934,V1002, V1006, V1007, V1009, V1010, V1022, V1501, V1504, V1505, V1508, V1520, V1524, V1601, V1602, V1603, V1605, V1609, V1619, V2024, V2027, V2029, V2033, V2200, V2308, V2309, V2310)
+
+colnames(changing_lives_subset) <- c("sex_r", "age_r", "sat_life", "life_could_happier", "look_back_sat", "no_change_life", "sat_home", "sat_neighborhood", "safe_attack", "pos_self_att", "think_am_good", "feel_am_failure", "can_do_any", "pushed_around", "marital_stat", "one_mar_deal_death_spouse" ,"one_mar_deal_divorce", "times_widowed", "times_divorce", "two_plus_mar_deal_divorce", "child_die", "num_child_die", "child_death_unexp", "deal_child_death", "deal_death_parent", "deal_spouse_die", "ever_widowed", "death_unexp", "wid_sui_murd", "fatal_illness", "how_rec_death", "things_happen", "stronger_person", "see_psych", "felt_dep", "was_happy", "felt_lonely", "no_knows_well", "enjoyed_life", "event_cause_dep", "phys_attack", "deal_phys_attack", "life_threat_ill", "deal_ill", "lost_job_three_yr", "deal_job_loss", "accept_bad", "die_when_time", "part_god_plan", "bad_meant_be", "entitled_good_fut", "rew_afterlife", "widowed_y_n", "deal_death_sp_one_plus_mar", "ever_dev", "deal_dev", "life_sat_index", "child_die_three_yr", "assult_three_yr", "ill_threat_three_yr")
+
+library(memisc)
+
+library(MASS)
+
+
+
+changing_lives_subset_final <- as.data.set(changing_lives_subset)
+
+
+```
+**1. Select two categorical variables from your dataset whose association you're interested in and conduct a chi-square test.** *If you only have continuous variables you will need to create categorical versions of these variables to make this work. You can do this using the `cut` function in mutate to add a new, categorical version of your variable to your dataset.*
+
+  a. Describe any modifications made to your data for the chi-square test and the composition of the variables used in the test (e.g., study time is measured using a three-category ordinal variable with categories indicating infrequent studying, medium studying, and frequent studying).
+  
+I will be looking at the life satisfaction variable (catagories indicating, COMPSAT, VERYSAT, SOMESAT, NOSAT) and positive self attitude (catogories indicating, STR AGREE, AG SOME, DIS SOME STR DIS). NO modifications were necessary. 
+
+  b. Does there appear to be an association between your two variables? Explain your reasoning.
+
+```{r}
+sat_att_tbl = table(changing_lives_subset_final$sat_life, changing_lives_subset_final$pos_self_att)
+
+sat_att_tbl
+
+chisq.test(sat_att_tbl)
+```
+
+  c. What are the degrees of freedom for this test and how is this calculated?
+  
+  the degrees of freedom for this test are 12 and this is calculated by taking the number of the columns - 1 and multiplying it with the number of rows - 1.  
+
+  d. What if the critical value for the test statistic? What is the obtained value for the test statistic?
+  
+  the critical value for this test is .05, the p value we obtained was 2.2e-16, therefore we can reject the null hypothesis.
+
+  e. How do you interpret the results of this test and the implications for your theoretical arguments about these two variables?
+
+This test shows there is a strong association between the variables, its would be expected in this case. 
+
+**2. Select one continuous variable and one categorical variable from your dataset whose association you're interested in exploring.** *Again, note that you'll need to create a categorical version of your independent variable to make this work.*
+
+  a. Describe any modifications made to your data for the ANOVA test and the composition of the variables used in the test (e.g., college rank is measured using a four-category variable with values indicating freshman, sophomore, junior, and senior class).
+  
+  I will be using the life satisfaction index variable and the dealing with spousal death variable. 
+  
+```{r}
+results <- aov(life_sat_index ~ deal_spouse_die, data = changing_lives_subset_final)
+
+summary(results)
+```
+
+  b. What are the degrees of freedom (both types) for this test and how are they calculated?
+
+there are 3 degrees of freedom calculateed by the deal_spouse_die varriable - 1
+
+  c. What is the obtained value of the test statistic?
+
+The p value in this test was .3, this is absurdly high and much higher than .05. we cannot reject the null hypothesis in this case. 
+
+
+  d. What do the resuts tell you about the association between these two variables? What does this mean for your theoretical arguments about these variables?
+  
+  this means there is not a solid association between how somone has dealt with the deeath of their spouse and their overall life satisfaction (based on the life satisfaction index).
+
+**3. Select two continuous variables from your dataset whos association you're interested in exploring.**
+
+  a. What is the correlation between these two variables? 
+  
+  I will be using the number of dead children variable and the life satisfaction variable. 
+  
+```{r}
+num_child_die_num <- as.numeric(changing_lives_subset_final$num_child_die)
+
+life_sat_num <- as.numeric(changing_lives_subset_final$sat_life)
+
+child_die_sat_ind <- as.data.frame(num_child_die_num)
+
+two <- as.data.frame(life_sat_num) 
+
+
+#I was having trouble coercing these two things into numeric, for some reason the data frame for the first variable worked and output the correct thing but not the second so thats why the mutate is janky. 
+
+pls_work <- mutate(child_die_sat_ind, life_sat_num)
+
+cor(pls_work)
+
+#this seems wrong but im not sure what to change. 
+```
+corelation is 1 according to this calculation. that seems wrong 
+
+  b. Create a scatterplot of the variables you selected. Does the correlation coefficient accurately represent the relationship between these two variables? Why or why not? 
+  
+```{r}
+ggplot(data = changing_lives_subset,
+       aes(x = num_child_die, y = sat_life, col = "red",)) + 
+         geom_jitter()
+```
+I guess becaue the values only go to 4 the variables do have a strong linear corelation, so yes, but thats mostly because I had to convert these varables to numeric from their original form.
+
+  c. Create a correlation matrix of your data using the `ggcorr` function from the `GGally` package. Be sure to label each cell with the correlation coefficient. 
+
+```{r}
+library(GGally)
+
+
+
+num_child_die_num <- as.numeric(changing_lives_subset_final$num_child_die)
+
+life_sat_num <- as.numeric(changing_lives_subset_final$sat_life)
+
+child_die_sat_ind <- as.data.frame(num_child_die_num)
+
+two <- as.data.frame(life_sat_num) 
+
+
+#I was having trouble coercing these two things into numeric, for some reason the data frame for the first variable worked and output the correct thing but not the second so thats why the mutate is janky. 
+
+pls_work <- mutate(child_die_sat_ind, life_sat_num)
+
+ggcorr(pls_work)
+
+
+
+````
+
+  d. What does this visual representation of correlation coefficients tell you about your data? Are there any relationships (or lack thereof) that are surprising to you? Why or why not?
+  
+  There is an absense of a linear realationship in the data. we have a correlation coefficent of 0.0, which is confusing me a lot considering I got a correlation coeffiecnt of 1 with the other test. 
+
+  e. What are the limitations of correlation coefficients? Can they ever be misleading? If so, in what ways? 
+  
+There may be a corelation in the data, just not a linear one. This does not tell you that. different plots can also produce the same coefficient that can also be misleading. 
+
