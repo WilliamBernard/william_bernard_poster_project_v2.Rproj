@@ -1,0 +1,122 @@
+---
+title: "Lab 14 - Bivariate Regression & Interpretation"
+author: "William Bernard"
+date: "November 28, 2017"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+Complete the following exercises below and include all code used to find the answers. Knit together the PDF document and commit both the Lab 14 RMD file and the PDF document to Git. Push the changes to GitHub so both documents are visible in your public GitHub repository.
+
+```{r, echo = FALSE, message = FALSE}
+
+library(ggplot2)
+
+library(dplyr)
+
+load("C:\\Users\\William Bernard\\Desktop\\americans's_changing_lives_data_set\\ICPSR_04690\\DS0001\\04690-0001-Data.rda")
+
+changing_lives_subset <- da04690.0001 %>% 
+  select(V103, V104, V301, V314, V316, V317, V322, V323, V324, V328, V329, V330, V331, V332, V401, V416, V419, V420, V425, V429, V440, V441, V445, V446, V534, V613, V701, V706, V709, V710, V711, V732, V735, V934,V1002, V1006, V1007, V1009, V1010, V1022, V1501, V1504, V1505, V1508, V1520, V1524, V1601, V1602, V1603, V1605, V1609, V1619, V2024, V2027, V2029, V2033, V2200, V2308, V2309, V2310)
+
+colnames(changing_lives_subset) <- c("sex_r", "age_r", "sat_life", "life_could_happier", "look_back_sat", "no_change_life", "sat_home", "sat_neighborhood", "safe_attack", "pos_self_att", "think_am_good", "feel_am_failure", "can_do_any", "pushed_around", "marital_stat", "one_mar_deal_death_spouse" ,"one_mar_deal_divorce", "times_widowed", "times_divorce", "two_plus_mar_deal_divorce", "child_die", "num_child_die", "child_death_unexp", "deal_child_death", "deal_death_parent", "deal_spouse_die", "ever_widowed", "death_unexp", "wid_sui_murd", "fatal_illness", "how_rec_death", "things_happen", "stronger_person", "see_psych", "felt_dep", "was_happy", "felt_lonely", "no_knows_well", "enjoyed_life", "event_cause_dep", "phys_attack", "deal_phys_attack", "life_threat_ill", "deal_ill", "lost_job_three_yr", "deal_job_loss", "accept_bad", "die_when_time", "part_god_plan", "bad_meant_be", "entitled_good_fut", "rew_afterlife", "widowed_y_n", "deal_death_sp_one_plus_mar", "ever_dev", "deal_dev", "life_sat_index", "child_die_three_yr", "assult_three_yr", "ill_threat_three_yr")
+
+library(memisc)
+
+library(MASS)
+
+
+changing_lives_subset_final <- as.data.set(changing_lives_subset)
+
+as.numeric.factor <- function(x) {as.numeric(levels(x))[x]}
+```
+
+**1. Select the main focal relationship you're interested in exploring for your poster project.**
+
+  a. Describe the response variable and the explanatory variable and the theoretical relationship you believe exists between these two variables. 
+
+I am looking to investigate the theoretical relationship between wheteher or not an individual has experienced the death of a spouse and their overall life satisfaction.
+
+
+
+  b. Conduct a simple (bivariate) linear regression on your focal relationship and save the model object. Print out the full results by calling `summary()` on your model object. 
+  
+
+```{r}
+
+oen <- as.numeric(changing_lives_subset_final$sat_life)
+
+two <- as.numeric(changing_lives_subset_final$ever_widowed)
+
+
+
+lm(two ~ oen) %>%
+  summary()
+```  
+  
+  c. What is the direction, magnitude, and statistical significance of the bivariate association between the explanatory and response variables. 
+  
+```{r}
+quickplot(two, oen) +
+  geom_jitter() 
+  
+```
+
+direction of the plot is somewhat meaningless considering the coercion, magnitude is very moderate, and it is not statistically significant at .05
+  
+  d. What is the meaning of the model intercept?
+  
+at a "ever widowed" value of 0 you would expect to see a satisfaction level of 1.75 which doesnt mean a whole lot.  
+  
+  e. How well does the bivariate model fit the data? How is this information calculated?
+  
+I would tend to think it fits fairly well. i have a very small residual considering the nature of the data and how I had to coerce it. Because of that I think this is appropriate.
+  
+ f. Is the observed association between the independent variable and dependent variable consistent with your hypothesis? Why or why not?
+  
+the association is .2022, which is far from statistically significant, but not too crazy as to say there is absolutly nothing there. I thought the connection may have been slightly stronger, but its possible that that is also affected by position in the life course. 
+  
+**2. Select a different focal relationship related to your project. This could be:**
+
+* **A different response and a different explanatory variable**
+
+* **A different response and the same explanatory variable**
+
+* **The same response and a different explanatory variable**
+
+  a. Describe the response variable and the explanatory variable and the theoretical relationship you believe exists between these two variables. 
+  
+I am looking at the relationship between having a child die and overall life satisfaction.
+  
+  b. Conduct a simple (bivariate) linear regression on your focal relationship and save the model object. Print out the full results by calling `summary()` on your model object. 
+  
+```{r}
+child_die_num<- as.numeric(changing_lives_subset_final$child_die)
+
+child_sat_lm <- lm(oen ~ child_die_num)
+
+
+
+summary(child_sat_lm)
+```
+  c. What is the direction, magnitude, and statistical significance of the bivariate association between the explanatory and response variables.
+  
+```{r}
+quickplot(child_die_num, oen) +
+  geom_jitter()
+```
+  
+once again using a nominal variable for x leaves us with a linar regression that doesnt have a decernable direction, there is however a strong association between the two variables, and the p value of .057 would tend me towards the claim that it is statistically significant. 
+  
+  d. What is the meaning of the model intercept?
+  
+at no chldren dead you would expect a sat of 2.1 
+  
+  e. How well does the bivariate model fit the data? How is this information calculated?
+  
+it fits fairly well, the residual standard error is not excessibly large. the residual standard error is the average distance from a given point and the best fit line.
+  
+  f. Is the observed association between the independent variable and dependent variable consistent with your hypothesis? Why or why not?
+  
+the association is very much in line with my hypothesis, the loss of a child has a strong connection with life satisfaction. which may seem like a no brainer but is a good place to start.  
