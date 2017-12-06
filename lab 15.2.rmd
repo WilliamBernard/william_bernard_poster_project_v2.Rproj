@@ -1,0 +1,143 @@
+---
+title: "Lab 15 - Multivariate Regression & Interpretation"
+author: "William Bernard"
+date: "November 30, 2017"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+Complete the following exercises below and include all code used to find the answers. Knit together the PDF document and commit both the Lab 15 RMD file and the PDF document to Git. Push the changes to GitHub so both documents are visible in your public GitHub repository.
+
+```{r, echo = FALSE, message = FALSE}
+library(ggplot2)
+
+library(dplyr)
+
+load("C:\\Users\\William Bernard\\Desktop\\americans's_changing_lives_data_set\\ICPSR_04690\\DS0001\\04690-0001-Data.rda")
+
+changing_lives_subset <- da04690.0001 %>% 
+  select(V103, V104, V301, V314, V316, V317, V322, V323, V324, V328, V329, V330, V331, V332, V401, V416, V419, V420, V425, V429, V440, V441, V445, V446, V534, V613, V701, V706, V709, V710, V711, V732, V735, V934,V1002, V1006, V1007, V1009, V1010, V1022, V1501, V1504, V1505, V1508, V1520, V1524, V1601, V1602, V1603, V1605, V1609, V1619, V2024, V2027, V2029, V2033, V2200, V2308, V2309, V2310)
+
+colnames(changing_lives_subset) <- c("sex_r", "age_r", "sat_life", "life_could_happier", "look_back_sat", "no_change_life", "sat_home", "sat_neighborhood", "safe_attack", "pos_self_att", "think_am_good", "feel_am_failure", "can_do_any", "pushed_around", "marital_stat", "one_mar_deal_death_spouse" ,"one_mar_deal_divorce", "times_widowed", "times_divorce", "two_plus_mar_deal_divorce", "child_die", "num_child_die", "child_death_unexp", "deal_child_death", "deal_death_parent", "deal_spouse_die", "ever_widowed", "death_unexp", "wid_sui_murd", "fatal_illness", "how_rec_death", "things_happen", "stronger_person", "see_psych", "felt_dep", "was_happy", "felt_lonely", "no_knows_well", "enjoyed_life", "event_cause_dep", "phys_attack", "deal_phys_attack", "life_threat_ill", "deal_ill", "lost_job_three_yr", "deal_job_loss", "accept_bad", "die_when_time", "part_god_plan", "bad_meant_be", "entitled_good_fut", "rew_afterlife", "widowed_y_n", "deal_death_sp_one_plus_mar", "ever_dev", "deal_dev", "life_sat_index", "child_die_three_yr", "assult_three_yr", "ill_threat_three_yr")
+
+library(memisc)
+
+library(MASS)
+
+
+changing_lives_subset_final <- as.data.set(changing_lives_subset)
+```
+
+**1. Select a second explanatory variable from your dataset that you think has implications for the theoretical association of your focal relationship.**
+
+a. Describe the theoretical reasoning for selecting this variable.
+
+I am selecting age, I feel like varying parts of the life course will yeild varrying interpretations of loss in these individuals. 
+
+b. What type of relationship do you think this variable has with your focal variables? Given that, what do you expect to happen to your focal relationship when it is added to the model?
+
+I think age might intereact with the likelyhood of these things occuring (like losing a child or death of a spouse etc) I think that will be reflected in the model. 
+
+c. Is it a continuous or categorical variable? What implications does this have for a multivariate regression equation?
+
+this is a continuous variable
+
+d. Conduct a multivariate linear regression with this additional explanatory variable and save the model object. Print out the full results by calling `summary()` on your model object.
+
+```{r}
+oen <- as.numeric(changing_lives_subset_final$sat_life)
+
+child_die_num <- as.numeric(changing_lives_subset_final$child_die)
+
+age <- (changing_lives_subset_final$age_r)
+
+child_sat_lm <- lm(oen ~ age + factor(child_die_num))
+
+child_sat_lm_2 <- lm(oen ~ child_die_num + factor(age))
+
+summary(child_sat_lm)
+
+summary(child_sat_lm_2)
+```
+
+e. Describe the results of the multivariate analysis, highlighting:
+
+* the apparent association between the control variable and the focal response variable
+
+after switching age and the loss of a child variable it is very apparent that age is more strongly associated with satisfaction than loss of a child is. 
+
+* how the focal association changed when you incorporatedthe control variable
+
+controling for a child death points towards age as a more significant motivating factor. 
+
+* the implications of these results for your focal association
+
+child loss is less impactful on life satisfaction than I would have predicted, 
+
+f. How well does this model fit the data? Is it an improvement over the bivariate model? Why or why not?
+
+it helps identify some things that could be wrong with the other model, it could be that as someone gets older they are more or less content and that is simultaiously making them more likely to have lost a child given they have been alive longer. possible explanation. 
+
+**2. Select any additional variables you want to incorporate into your final model. For each additional variable added to the model answer the following questions:**
+
+
+a. Describe the theoretical reasoning for selecting this variable.
+
+positive self attitude could be a completely seperate confounding variable. 
+
+
+b. What type of relationship do you think this variable has with your focal variables? Given that, what do you expect to happen to your focal relationship when it is added to the model?
+
+I think it is has a stronger connection to satisfaction.
+
+c. Is it a continuous or categorical variable? What implications does this have for a multivariate regression equation?
+
+it is a catagorical variable, 
+
+d. Conduct a multivariate linear regression by adding one explanatory variable at a time and save the model objects. Print out the full results by calling `summary()` on each model object.
+
+```{r}
+
+child_three <- as.numeric(changing_lives_subset_final$child_die_three_yr)
+
+pos_self_att_num <- as.numeric(changing_lives_subset_final$pos_self_att)
+
+
+child_three_sat_lm <- lm(oen ~ child_three + factor(pos_self_att_num)) 
+
+summary(child_three_sat_lm)
+
+
+
+new <- lm(oen ~ child_three + pos_self_att_num)
+
+summary(new)
+
+anova(new, test = "Chisq")
+
+
+```
+
+e. Describe the results of the multivariate analysis, highlighting:
+* the apparent association between each additional control variable and the focal response variable
+
+The child dying in the last 3 years lost its significance as the positive self attitude was introduced. 
+
+
+* how the focal association changed when you incorporated each control variable
+
+the relationship between satisfaction and children dying in the last three years decreased as the postive self attude was introduced. 
+
+* the implications of these results for your focal association
+
+that positive self attitude may be more imortant than a kid dying in the last three years. 
+
+f. How well does the full (all explanatory variables included) model fit? Are any of the other models you ran a better fit? Explain how you came to the conclusion you did. 
+
+the models seem to be pretty consistant looking at lr and anova so I think this does the job fine. I tested anova considering my reliance on catagorical variables. 
+
+
+g. Select the model that you think best fits the data. Provide a brief synopsis of the analysis of your data using this model and describe the implications for the theoretical arguments you set out to test.
+
+I am going to stick with the Lr for now, the anova could also be used but considering that they seem to be fairly consistant I see not reason to swap. what we see here is positive self attitude has a strong relationship with life satisfaction (2e-16) and when factoring that in, loss of a child in the last three years has a moderate association (~.08). there is an intercpt at 1.4 - 1.7 but that means less considering the catagorical nature but we can expect to see child dying in the last 3 years increase their life satisfaction by .17 consistantly (on the scale of 1-4) and about .3 on a scale of 1-4. thats really interesting, I wouldnt have expected to see that cause an increase (child death in the last 4 years). but that being said it is a weaker relationship made weaker by positive self attitude. it kind of turns my theory on its head in some ways and boulsters it in others. 
