@@ -45,20 +45,20 @@ I am looking to investigate the theoretical relationship between wheteher or not
 
 ```{r}
 
-oen <- as.numeric(changing_lives_subset_final$sat_life)
+sat_life_num <- as.numeric(changing_lives_subset_final$sat_life)
 
-two <- as.numeric(changing_lives_subset_final$ever_widowed)
+ever_wid_num <- as.numeric(changing_lives_subset_final$ever_widowed)
 
 
 
-lm(two ~ oen) %>%
+lm(sat_life_num ~ ever_wid_num) %>%
   summary()
 ```  
   
   c. What is the direction, magnitude, and statistical significance of the bivariate association between the explanatory and response variables. 
   
 ```{r}
-quickplot(two, oen) +
+quickplot(sat_life_num, ever_wid_num) +
   geom_jitter() 
   
 ```
@@ -94,7 +94,7 @@ I am looking at the relationship between having a child die and overall life sat
 ```{r}
 child_die_num<- as.numeric(changing_lives_subset_final$child_die)
 
-child_sat_lm <- lm(oen ~ child_die_num)
+child_sat_lm <- lm(sat_life_num ~ child_die_num)
 
 
 
@@ -103,7 +103,7 @@ summary(child_sat_lm)
   c. What is the direction, magnitude, and statistical significance of the bivariate association between the explanatory and response variables.
   
 ```{r}
-quickplot(child_die_num, oen) +
+quickplot(child_die_num, sat_life_num) +
   geom_jitter()
 ```
   
@@ -115,7 +115,7 @@ at no chldren dead you would expect a sat of 2.1
   
   e. How well does the bivariate model fit the data? How is this information calculated?
   
-it fits fairly well, the residual standard error is not excessibly large. the residual standard error is the average distance from a given point and the best fit line.
+it fits fairly well, the r squared value is really small but considering the nature of the data I think this is still okay. r squared is a test of the agrigrate regression, it lets you know how well your model helps predict, and summaraizes discrepencies.
   
   f. Is the observed association between the independent variable and dependent variable consistent with your hypothesis? Why or why not?
   
