@@ -46,15 +46,15 @@ this is a continuous variable
 d. Conduct a multivariate linear regression with this additional explanatory variable and save the model object. Print out the full results by calling `summary()` on your model object.
 
 ```{r}
-oen <- as.numeric(changing_lives_subset_final$sat_life)
+sat_life_num <- as.numeric(changing_lives_subset_final$sat_life)
 
 child_die_num <- as.numeric(changing_lives_subset_final$child_die)
 
 age <- (changing_lives_subset_final$age_r)
 
-child_sat_lm <- lm(oen ~ age + factor(child_die_num))
+child_sat_lm <- lm(sat_life_num ~ age + factor(child_die_num))
 
-child_sat_lm_2 <- lm(oen ~ child_die_num + factor(age))
+child_sat_lm_2 <- lm(sat_life_num ~ child_die_num + factor(age))
 
 summary(child_sat_lm)
 
@@ -104,17 +104,17 @@ child_three <- as.numeric(changing_lives_subset_final$child_die_three_yr)
 pos_self_att_num <- as.numeric(changing_lives_subset_final$pos_self_att)
 
 
-child_three_sat_lm <- lm(oen ~ child_three + factor(pos_self_att_num)) 
+child_three_sat_lm <- lm(sat_life_num ~ child_three + factor(pos_self_att_num)) 
 
 summary(child_three_sat_lm)
 
 
 
-new <- lm(oen ~ child_three + pos_self_att_num)
+factor_test_child_pos <- lm(sat_life_num ~ child_three + pos_self_att_num)
 
-summary(new)
+summary(factor_test_child_pos)
 
-anova(new, test = "Chisq")
+anova(factor_test_child_pos, test = "Chisq")
 
 
 ```
@@ -135,7 +135,7 @@ that positive self attitude may be more imortant than a kid dying in the last th
 
 f. How well does the full (all explanatory variables included) model fit? Are any of the other models you ran a better fit? Explain how you came to the conclusion you did. 
 
-the models seem to be pretty consistant looking at lr and anova so I think this does the job fine. I tested anova considering my reliance on catagorical variables. 
+the models seem to be pretty consistant looking at lr and anova so I think this does the job fine. I tested anova considering my reliance on catagorical variables. the r squared value is small but considering the data its not too small (.05).
 
 
 g. Select the model that you think best fits the data. Provide a brief synopsis of the analysis of your data using this model and describe the implications for the theoretical arguments you set out to test.
