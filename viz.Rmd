@@ -1,0 +1,174 @@
+---
+title: "Untitled"
+author: "William Bernard"
+date: "December 6, 2017"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+```{r, echo = FALSE, message = FALSE}
+library(ggplot2)
+
+library(dplyr)
+
+load("C:\\Users\\William Bernard\\Desktop\\americans's_changing_lives_data_set\\ICPSR_04690\\DS0001\\04690-0001-Data.rda")
+
+changing_lives_subset <- da04690.0001 %>% 
+  select(V103, V104, V301, V314, V316, V317, V322, V323, V324, V328, V329, V330, V331, V332, V401, V416, V419, V420, V425, V429, V440, V441, V445, V446, V534, V613, V701, V706, V709, V710, V711, V732, V735, V934,V1002, V1006, V1007, V1009, V1010, V1022, V1501, V1504, V1505, V1508, V1520, V1524, V1601, V1602, V1603, V1605, V1609, V1619, V2024, V2027, V2029, V2033, V2200, V2308, V2309, V2310)
+
+changing_lives_subset <- da04690.0001 %>% 
+  select(V103, V104, V301, V314, V316, V317, V322, V323, V324, V328, V329, V330, V331, V332, V401, V416, V419, V420, V425, V429, V440, V441, V445, V446, V534, V613, V701, V706, V709, V710, V711, V732, V735, V934,V1002, V1006, V1007, V1009, V1010, V1022, V1501, V1504, V1505, V1508, V1520, V1524, V1601, V1602, V1603, V1605, V1609, V1619, V2024, V2027, V2029, V2033, V2200, V2308, V2309, V2310)
+
+colnames(changing_lives_subset) <- c("sex_r", "age_r", "sat_life", "life_could_happier", "look_back_sat", "no_change_life", "sat_home", "sat_neighborhood", "safe_attack", "pos_self_att", "think_am_good", "feel_am_failure", "can_do_any", "pushed_around", "marital_stat", "one_mar_deal_death_spouse" ,"one_mar_deal_divorce", "times_widowed", "times_divorce", "two_plus_mar_deal_divorce", "child_die", "num_child_die", "child_death_unexp", "deal_child_death", "deal_death_parent", "deal_spouse_die", "ever_widowed", "death_unexp", "wid_sui_murd", "fatal_illness", "how_rec_death", "things_happen", "stronger_person", "see_psych", "felt_dep", "was_happy", "felt_lonely", "no_knows_well", "enjoyed_life", "event_cause_dep", "phys_attack", "deal_phys_attack", "life_threat_ill", "deal_ill", "lost_job_three_yr", "deal_job_loss", "accept_bad", "die_when_time", "part_god_plan", "bad_meant_be", "entitled_good_fut", "rew_afterlife", "widowed_y_n", "deal_death_sp_one_plus_mar", "ever_dev", "deal_dev", "life_sat_index", "child_die_three_yr", "assult_three_yr", "ill_threat_three_yr")
+
+library(memisc)
+
+library(MASS)
+
+changing_lives_subset_final <- as.data.set(changing_lives_subset)
+
+
+
+```
+
+```{r}
+sat_life_num <- as.numeric(changing_lives_subset_final$sat_life)
+
+child_die_num <- as.numeric(changing_lives_subset_final$child_die)
+
+age <- (changing_lives_subset_final$age_r)
+
+pos_self_att_num <- as.numeric(changing_lives_subset_final$pos_self_att)
+
+child_three <- as.numeric(changing_lives_subset_final$child_die_three_yr)
+
+ever_div <- as.numeric(changing_lives_subset_final$ever_dev)
+
+marital_status <- as.numeric(changing_lives_subset_final$marital_stat)
+
+sex <- as.numeric(changing_lives_subset_final$sex_r)
+
+ever_wid <- as.numeric(changing_lives_subset_final$ever_widowed)
+
+deal_mar <- as.numeric(changing_lives_subset_final$one_mar_deal_divorce)
+
+
+
+child_sat_lm <- lm(sat_life_num ~ factor(child_three))
+
+child_sat_lm_2 <- lm(sat_life_num ~ factor(child_three) + factor(pos_self_att_num))
+
+child_sat_lm_3 <- lm(sat_life_num ~ factor(child_three) + factor(pos_self_att_num) + factor(ever_div))
+
+child_sat_lm_4 <- lm(sat_life_num ~ factor(child_three) + factor(pos_self_att_num) + factor(ever_div) + factor(marital_status))
+
+child_sat_lm_5 <- lm(sat_life_num ~ factor(sex) + factor(child_three) + factor(pos_self_att_num) + factor(ever_div) + factor(marital_status))
+
+child_sat_lm_6 <- lm(sat_life_num ~ factor(sex) + factor(child_three) + factor(pos_self_att_num) + factor(ever_div) + factor(marital_status))
+
+summary(child_sat_lm)
+
+summary(child_sat_lm_2)
+
+summary(child_sat_lm_3)
+
+summary(child_sat_lm_4)
+
+summary(child_sat_lm_5)
+
+summary(child_sat_lm_6)
+
+print(deal_mar)
+```
+
+
+```{r}
+lm(changing_lives_subset_final$life_sat_index ~ marital_status)
+
+```
+
+
+```{r}
+
+
+ggplot(data = changing_lives_subset,
+       aes(x = child_die_three_yr, y = sat_life, col = "red")) + 
+         geom_point(position = "jitter") +
+  geom_boxplot(colour = "black") +
+  facet_grid(. ~sex_r)
+
+sat_life_bar <- ggplot(data = changing_lives_subset,
+       aes(x = sat_life)) +
+  geom_bar()
+
+sat_life_bar
+
+```
+
+```{r}
+
+sat_life_bar + 
+  geom_bar(aes(fill = pos_self_att)) +
+  facet_grid(. ~marital_stat)
+
+
+``` 
+
+
+```{r}
+
+ggplot(data = changing_lives_subset, aes(x = sat_life,  group = marital_stat)) +
+    geom_bar(aes(y = ..prop.., fill = factor(..x..)), stat="count") +
+    geom_text(aes( label = scales::percent(..prop..),
+                   y= ..prop.. ), stat= "count", vjust = -.5) +
+    facet_grid(~marital_stat) +
+    scale_y_continuous(labels=percent)
+
+
+
+sat_life_bar + 
+  geom_bar(aes(fill = deal_child_death)) +
+  facet_grid(. ~child_die)
+
+
+
+
+
+
+```
+
+
+(y = ((..count..)/sum(..count..)), label = scales::percent((..count..)/sum(..count..))), stat = "count", vjust = -0.25
+
+
+   geom_text(data = changing_lives_subset, aes(x = sat_life, label = paste0(percentage, %)), size = 4)
+
+
+```{r}
+
+ggplot(changing_lives_subset, aes(x = marital_stat, y = life_sat_index, fill = child_die_three_yr)) +
+  geom_violin() +
+  facet_grid(. ~deal_child_death)
+
+
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+```
