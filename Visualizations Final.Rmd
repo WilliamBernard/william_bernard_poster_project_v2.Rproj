@@ -162,5 +162,10 @@ life_satisfaction_marital_status_plot +
 
 
 
+
 ```
 This Visualization was an interesting one to tackle. I had the most difficulty changing the values to percentages. I could not realistically change 3 thousand plus inputs by hand, so instead of writing a program for myself and adding a new variable I was able to alter it in ggplot. the plot is effective because it allows the viewer to get a sense for the distribution of each facet that isn't possible in the other graph due to the disparity in the response numbers. I ultimately made the call to eliminate the x and y axis labels. I think the graph looks a lot cleaner this way and it is very readily communicated to the viewer what is being displayed while simultaneously relaying all the relevant information. Theme_few was used because I was interacting with colors. 
+
+
+
+*These graphs may look squashed, especially the last one, however when exporting them for the project the dimensions create a viewable experience. I will be uploading a png to github as well so you can view the image. The .png is titled "Life_Satisfaction_Marital_Status.png". 
