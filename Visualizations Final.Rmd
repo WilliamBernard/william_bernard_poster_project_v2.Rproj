@@ -1,0 +1,166 @@
+---
+title: "Final Visualizations"
+author: "William Bernard"
+date: "December 7, 2017"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+```{r, echo = FALSE, message = FALSE}
+library(ggplot2)
+
+library(dplyr)
+
+load("C:\\Users\\William Bernard\\Desktop\\americans's_changing_lives_data_set\\ICPSR_04690\\DS0001\\04690-0001-Data.rda")
+
+changing_lives_subset <- da04690.0001 %>% 
+  select(V103, V104, V301, V314, V316, V317, V322, V323, V324, V328, V329, V330, V331, V332, V401, V416, V419, V420, V425, V429, V440, V441, V445, V446, V534, V613, V701, V706, V709, V710, V711, V732, V735, V934,V1002, V1006, V1007, V1009, V1010, V1022, V1501, V1504, V1505, V1508, V1520, V1524, V1601, V1602, V1603, V1605, V1609, V1619, V2024, V2027, V2029, V2033, V2200, V2308, V2309, V2310)
+
+changing_lives_subset <- da04690.0001 %>% 
+  select(V103, V104, V301, V314, V316, V317, V322, V323, V324, V328, V329, V330, V331, V332, V401, V416, V419, V420, V425, V429, V440, V441, V445, V446, V534, V613, V701, V706, V709, V710, V711, V732, V735, V934,V1002, V1006, V1007, V1009, V1010, V1022, V1501, V1504, V1505, V1508, V1520, V1524, V1601, V1602, V1603, V1605, V1609, V1619, V2024, V2027, V2029, V2033, V2200, V2308, V2309, V2310)
+
+colnames(changing_lives_subset) <- c("sex_r", "age_r", "sat_life", "life_could_happier", "look_back_sat", "no_change_life", "sat_home", "sat_neighborhood", "safe_attack", "pos_self_att", "think_am_good", "feel_am_failure", "can_do_any", "pushed_around", "marital_stat", "one_mar_deal_death_spouse" ,"one_mar_deal_divorce", "times_widowed", "times_divorce", "two_plus_mar_deal_divorce", "child_die", "num_child_die", "child_death_unexp", "deal_child_death", "deal_death_parent", "deal_spouse_die", "ever_widowed", "death_unexp", "wid_sui_murd", "fatal_illness", "how_rec_death", "things_happen", "stronger_person", "see_psych", "felt_dep", "was_happy", "felt_lonely", "no_knows_well", "enjoyed_life", "event_cause_dep", "phys_attack", "deal_phys_attack", "life_threat_ill", "deal_ill", "lost_job_three_yr", "deal_job_loss", "accept_bad", "die_when_time", "part_god_plan", "bad_meant_be", "entitled_good_fut", "rew_afterlife", "widowed_y_n", "deal_death_sp_one_plus_mar", "ever_dev", "deal_dev", "life_sat_index", "child_die_three_yr", "assult_three_yr", "ill_threat_three_yr")
+
+library(memisc)
+
+library(MASS)
+
+library(ggthemes)
+
+changing_lives_subset_final <- as.data.set(changing_lives_subset)
+
+options(warn = -1)
+
+```
+
+```{r, echo = FALSE, message = FALSE}
+
+#LIFE SATISFACTION MARITAL STATUS AND POSITIVE SELF ATTITUDE 
+
+marital_groups <- c(
+  `(1) MARRIED` = "Married",
+  `(2) SEPARATE` = "Separated",
+  `(3) DIVORCED` = "Divorced",
+  `(4) WIDOWED` = "Widowed",
+  `(5) NEVMARRY` = "Never Married")
+
+marital_labeller <- function(variable,value){
+  return(marital_groups[value])
+}
+
+
+sat_life_bar <- ggplot(data = changing_lives_subset,
+       aes(x = sat_life)) +
+  geom_bar()
+
+
+sat_life_bar + 
+  geom_bar(aes(fill = pos_self_att)) +
+  facet_grid(. ~marital_stat, labeller = marital_labeller) + 
+  labs(title = "Life Satisfaction, Marital Status and Positve Self Attitude") +
+  labs(y = "Number of Respondants") +
+  labs(x = "Life Satisfaction") + 
+  labs(caption = "based on data from Americans' Changing Lives") +
+   scale_fill_discrete(name = "Have a Positive Self Attitude", labels = c("Strongly Agree", "Agree Somewhat", "Somewhat Disagree", "Strongly Disagree", "No Response")) +
+  scale_x_discrete(labels = c(`(1) COMPSAT` = "Completely Satisfied", `(2) VERYSAT` = "Very Satisfied", `(3) SOMESAT` = "Somewhat Satisfied", `(4) NVERYSAT` = "Not Very Satisfied", `(5) NOTAASAT` = "Not At All Satisfied")) +
+  theme_few() +
+  theme(axis.text.x = element_text(angle = 90))
+  
+  
+#done
+
+
+
+
+```
+This graph was somewhat vital, because it demonstrated the most interesting relationship. I found that marital status had more of an impact on the overall association so faceting that was something that made immediate sense. looking at how positive self attitude also seemed like something that would be interesting to investigate in this context(positive self att also statistically significant), so I filled the bars with the proportion of responses to the question of if the respondent thought they had a positive self attitude. Rotating labels on the x axis was challenging in that I had to find an orientation that worked with the length of label. Ultimately I went with 90 degrees for the sake of clarity and not cutting anything off in the final output. Theme_few was used because of the use of color in the graph.You might notice some space between the bottom of the graph and the beginning of the bars, I decided I kind of enjoyed the space, so instead of eliminating it I kept it (this aesthetic choice is consistent throughout).
+
+```{r, echo = FALSE, message = FALSE}
+
+#LIFE SATISFACTION AND DEATH OF CHILD
+
+child_die_names <- c(
+  `(1) YES` = "Have Had A Child Die",
+  `(2) NO` = "Have Not Had A Child Die"
+)
+
+satisfaction_names <- c(
+  `(1) COMPSAT` = "Completely Satisfied",
+  `(2) VERYSAT` = "Very Satisfied",
+  `(3) SOMESAT` = "Somewhat Satisfied",
+  `(4) NVERYSAT` = "Not Very Satisfied",
+  `(5) NOTAASAT` = "Not At All Satisfied"
+)
+
+child_labeller <- function(variable,value){
+  return(child_die_names[value])
+}
+
+sat_labeller <- function(variable,value){
+  return(satisfaction_names[value])
+}
+
+
+sat_life_bar + 
+  geom_bar(aes(fill = deal_child_death)) +
+  facet_grid(. ~child_die, labeller = child_labeller) + 
+  labs(title = "Life Satisfaction and Death of Child") +
+  labs(y = "Number of Respondants") +
+  labs(x = "Life Satisfaction") + 
+  labs(caption = "based on data from Americans' Changing Lives") +
+  scale_fill_discrete(name = "Dealt With Death of Child", labels = c("Very Well", "Quite Well", "Somewhat Well", "Not Well", "No Child Death")) +
+  scale_x_discrete(labels = c(`(1) COMPSAT` = "Completely Satisfied", `(2) VERYSAT` = "Very Satisfied", `(3) SOMESAT` = "Somewhat Satisfied", `(4) NVERYSAT` = "Not Very Satisfied", `(5) NOTAASAT` = "Not At All Satisfied")) +
+  theme_few() +
+  theme(axis.text.x = element_text(angle = 90))
+  
+  
+#done
+
+
+
+```
+While I ultimately determined that the death of a child was not a statistically significant motivating factor in life satisfaction, I still felt like it was vital to include this as a way to show the progression of the project. This does that and helps to visualize the ultimate lack of a connection between having a child die and life satisfaction given the distribution of both facets. I am using bar charts as my pseudo statistical graph (discussed in your lecture), because of the limited bins I am working with (categorical data). The hardest challenge here was orienting the x axis labels and making sure they didn't get cut off or cover any portion of the graph. I felt it gave the graph clarity and worked well with the minimal aesthetic. Theme_few was used because I was working with colors. 
+
+```{r, echo = FALSE, message = FALSE}
+
+#LIFE SATISFACTION AND MARITAL STATUS
+
+marital_groups <- c(
+  `(1) MARRIED` = "Married",
+  `(2) SEPARATE` = "Separated",
+  `(3) DIVORCED` = "Divorced",
+  `(4) WIDOWED` = "Widowed",
+  `(5) NEVMARRY` = "Never Married")
+
+marital_labeller <- function(variable,value){
+  return(marital_groups[value])
+}
+
+life_satisfaction_marital_status_plot <- ggplot(data = changing_lives_subset, aes(x = sat_life,  group = marital_stat)) + 
+  labs(x = "Life Satisfaction") + 
+  labs(y = "Percentage of Respondants") + 
+  labs(title = "Life Satisfaction and Marital Status") + 
+  labs(caption = "based on data from Americans' Changing Lives") +
+    geom_bar(aes(y = ..prop.., fill = factor(..x..)), stat="count") +
+    geom_text(aes( label = scales::percent(..prop..),
+                   y= ..prop.. ), stat= "count", vjust = -.5) +
+    facet_grid(~marital_stat, labeller = marital_labeller) +
+    scale_y_continuous(labels=percent)
+
+life_satisfaction_marital_status_plot + 
+  theme_few() +
+  theme(axis.text.y = element_blank(),
+        axis.text.x = element_blank()) + 
+  scale_fill_discrete(name = "Life Satisfaction Category",
+                      labels = c("Completely Satisfied", "Very Satisfied", "Somewhat Satisfied", "Not Very Satisfied", "Not At All Satisfied", "No Response"))
+
+
+#done
+
+
+
+
+
+```
+This Visualization was an interesting one to tackle. I had the most difficulty changing the values to percentages. I could not realistically change 3 thousand plus inputs by hand, so instead of writing a program for myself and adding a new variable I was able to alter it in ggplot. the plot is effective because it allows the viewer to get a sense for the distribution of each facet that isn't possible in the other graph due to the disparity in the response numbers. I ultimately made the call to eliminate the x and y axis labels. I think the graph looks a lot cleaner this way and it is very readily communicated to the viewer what is being displayed while simultaneously relaying all the relevant information. Theme_few was used because I was interacting with colors. 
